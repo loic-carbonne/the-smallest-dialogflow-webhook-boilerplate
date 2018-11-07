@@ -1,0 +1,24 @@
+{
+  "name": "the-smallest-dialogflow-webhook-boilerplate",
+  "version": "1.0.0",
+  "description": "all is said with the name of the repository",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loic-carbonne/the-smallest-dialogflow-webhook-boilerplate.git"
+  },
+  "author": "Loïc Carbonne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loic-carbonne/the-smallest-dialogflow-webhook-boilerplate/issues"
+  },
+  "homepage": "https://github.com/loic-carbonne/the-smallest-dialogflow-webhook-boilerplate#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
