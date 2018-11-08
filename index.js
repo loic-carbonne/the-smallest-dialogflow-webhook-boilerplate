@@ -3,6 +3,7 @@
 let express = require('express')
 let app = express()
 let bodyParser = require('body-parser')
+let axios = require('axios')
 
 // These two following lines ensures that every incomming request is parsed to json automatically
 app.use(bodyParser.urlencoded({ extended: 'true' }))
@@ -14,13 +15,36 @@ app.use((req, res, next) => {
   next()
 })
 
-app.post('/', (req, res) => {
+const url = 'https://www.iiens.net/etudiants/edt/json_services/events.php?2018/11/13-3-/allemand1/GR1/op31.4/op32.3g1/op33.2g1/op34.2';
+
+const extractClassEvents = jsonResponse =>
+  Object.keys(jsonResponse.eventgroups)
+    .map(key => jsonResponse.eventgroups[key].events[Object.keys(jsonResponse.eventgroups[key].events)[0]])
+    .filter(event => event.type === 'Cours');
+
+const computeResponse = classEvents => {
+  if (classEvents.length === 0) return "Tu n'as rien";
+
+  return classEvents.reduce((agg, event, index) => {
+    const separator = index === 0 ? '' :
+      index === classEvents.length -1 ? ' et' : ',';
+    return `${agg}${separator} ${event.title}`
+  }, 'Voici tes cours : ');
+};
+
+app.post('/', async (req, res) => {
   let response = {};
   const intentName = req.body.queryResult.intent.displayName;
 
   if (intentName === 'hello') {
     response = {
       fulfillmentText: "Hello",
+    }
+  } else if (intentName === 'askPlanning') {
+    const iiensResponse = await axios.get(url).then(response => response.data);
+
+    response = {
+      fulfillmentText: computeResponse(extractClassEvents(iiensResponse)),
     }
   }
 
