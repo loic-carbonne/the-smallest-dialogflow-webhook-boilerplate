@@ -15,7 +15,7 @@ app.use((req, res, next) => {
   next()
 })
 
-const url = 'https://www.iiens.net/etudiants/edt/json_services/events.php?2018/11/13-3-/allemand1/GR1/op31.4/op32.3g1/op33.2g1/op34.2';
+const computeUrl = date => `https://www.iiens.net/etudiants/edt/json_services/events.php?${date}-3-/allemand1/GR1/op31.4/op32.3g1/op33.2g1/op34.2`;
 
 const extractClassEvents = jsonResponse =>
   Object.keys(jsonResponse.eventgroups)
@@ -41,6 +41,9 @@ app.post('/', async (req, res) => {
       fulfillmentText: "Hello",
     }
   } else if (intentName === 'askPlanning') {
+    const date = req.body.queryResult.parameters.date.substring(0, 10).replace(/-/g, '/');
+    const url = computeUrl(date);
+
     const iiensResponse = await axios.get(url).then(response => response.data);
 
     response = {
