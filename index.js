@@ -22,13 +22,21 @@ const extractClassEvents = jsonResponse =>
     .map(key => jsonResponse.eventgroups[key].events[Object.keys(jsonResponse.eventgroups[key].events)[0]])
     .filter(event => event.type === 'Cours');
 
+const quarterToTime = quarter => {
+  const minutes = (quarter % 4) * 15;
+  const hours = (quarter - (quarter % 4)) / 4;
+
+  return minutes === 0 ? `${hours}h` : `${hours}:${minutes}`;
+}
+
 const computeResponse = classEvents => {
   if (classEvents.length === 0) return "Tu n'as rien";
-
   return classEvents.reduce((agg, event, index) => {
     const separator = index === 0 ? '' :
       index === classEvents.length -1 ? ' et' : ',';
-    return `${agg}${separator} ${event.title}`
+    const eventTime = quarterToTime(event.start);
+
+    return `${agg}${separator} ${event.title} à ${eventTime}`
   }, 'Voici tes cours : ');
 };
 
